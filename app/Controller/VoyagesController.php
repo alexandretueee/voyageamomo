@@ -18,7 +18,7 @@ class VoyagesController extends AppController {
 public function beforeFilter() {
     parent::beforeFilter();
     // Allow users to register and logout.
-    $this->Auth->allow('add', 'logout');
+    $this->Auth->allow( 'logout');
 }
 
 public function isAuthorized($user) {
@@ -48,6 +48,11 @@ public function logout() {
  * @return void
  */
 	public function index() {
+		$this->Voyage->recursive = 0;
+		$this->set('voyages', $this->Paginator->paginate());
+	}
+	
+	public function rapport() {
 		$this->Voyage->recursive = 0;
 		$this->set('voyages', $this->Paginator->paginate());
 	}

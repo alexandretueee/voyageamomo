@@ -7,7 +7,7 @@ App::uses('AppController', 'Controller');
  * @property PaginatorComponent $Paginator
  */
 class UsersInformationsController extends AppController {
-
+public $d;
 /**
  * Components
  *
@@ -16,7 +16,7 @@ class UsersInformationsController extends AppController {
  public function beforeFilter() {
     parent::beforeFilter();
     // Allow users to register and logout.
-    $this->Auth->allow('add', 'logout');
+    $this->Auth->allow('add');
 }
 
 public function isAuthorized($user) {
@@ -24,6 +24,7 @@ public function isAuthorized($user) {
     if ($this->action === 'add') {
         return true;
     }
+    
 	
 	 return parent::isAuthorized($user);
 	 
@@ -80,6 +81,38 @@ public function logout() {
 			$this->UsersInformation->create();
 			if ($this->UsersInformation->save($this->request->data)) {
 				$this->Session->setFlash(__('The users information has been saved.'));
+				$d = $this->request->data;
+				$link = "http://" . $_SERVER['HTTP_HOST'] . $this->webroot . "usersinformations/";
+				App::uses('CakeEmail', 'Network/Email');
+				$mail = new CakeEmail('gmail');
+				$mail->from('noreply@localhost.com')
+				     ->to('antoine859@gmail.com')
+				     ->subject('Inscription étudiant')
+				     ->emailFormat('html')
+					 ->template('message')
+					 ->viewVars(array('prenom'=>$d['UsersInformation']['prenom'], 
+										'link'=>$link,  
+										'nom'=>$d['UsersInformation']['nom'],
+										'noda'=>$d['UsersInformation']['numero_da'],
+										'pays'=>$d['UsersInformation']['pay_id'],
+										'programme'=>$d['UsersInformation']['programme_id'],
+										'voyage'=>$d['UsersInformation']['voyage_id'],
+										'date_naiss'=>$d['UsersInformation']['date_de_naissance'],
+										'passeport'=>$d['UsersInformation']['numero_passeport'],
+										'delivrance'=>$d['UsersInformation']['date_de_delivrance'],
+										'expiration'=>$d['UsersInformation']['date_expiration'],
+										'adresse'=>$d['UsersInformation']['adresse'],
+										'ville'=>$d['UsersInformation']['ville'],
+										'code_postal'=>$d['UsersInformation']['code_postal'],
+										'telephone'=>$d['UsersInformation']['telephone'],
+										'cellulaire'=>$d['UsersInformation']['cellulaire'],
+										'courriel'=>$d['UsersInformation']['courriel'],
+										'session'=>$d['UsersInformation']['session'],
+										'cours_espagnol'=>$d['UsersInformation']['cours_espagnol'],
+										'cours_espagnol_precise'=>$d['UsersInformation']['cours_espagnol_precise']
+										
+					 ))
+					 ->send();
 				return $this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The users information could not be saved. Please, try again.'));
@@ -145,6 +178,59 @@ public function logout() {
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
+	
+	public function paiement($id = null) {
+			$this->UsersInformation->recursive = 0;
+		$this->set('usersInformations', $this->Paginator->paginate());
+		
+		$voyages = $this->UsersInformation->Voyage->find('list', array(
+        'fields' => array('id', 'voyage','prix')));
+		
+		
+		$this->set(compact('voyages', 'prix'));
+	}
+	
+	public function effectuerPaiement($id = null) {
+			$this->UsersInformation->id = $id;
+		if (!$this->UsersInformation->exists()) {
+			throw new NotFoundException(__('Invalid users information'));
+		}
+		$results = $this->UsersInformation->saveField('paiement',1);
+		
+			$this->Session->setFlash(__('Paiement effectuer.'));
+			
+		
+		return $this->redirect(array('action' => 'paiement'));
+		$d = $this->request->data;
+				$link = "http://" . $_SERVER['HTTP_HOST'] . $this->webroot . "usersinformations/view/".$id;
+				App::uses('CakeEmail', 'Network/Email');
+				$mail = new CakeEmail('gmail');
+				$mail->from('noreply@localhost.com')
+				     ->to('antoine859@gmail.com')
+				     ->subject('Paiement étudiant')
+				     ->emailFormat('html')
+					 ->template('message2')
+					 ->viewVars(array( 'link'=>$link
+										))
+				
+				->send();
+	}
+	
+	
+	public function rapport() {
+		
+	$this->UsersInformation->recursive = 0;
+		$this->set('usersInformations', $this->Paginator->paginate());
+	}
+	
+	public function rapportEtudiant($id = null) {
+		if (!$this->UsersInformation->exists($id)) {
+			throw new NotFoundException(__('Invalid users information'));
+		}
+		$options = array('conditions' => array('UsersInformation.' . $this->UsersInformation->primaryKey => $id));
+		$this->set('usersInformation', $this->UsersInformation->find('first', $options));
+	}
+	
 
 /**
  * admin_index method
