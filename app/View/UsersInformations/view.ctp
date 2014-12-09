@@ -88,9 +88,10 @@
 			&nbsp;
 		</dd>
 		<dt><?php echo __('Cours Espagnol'); ?></dt>
-		<dd>
-			<?php echo h($usersInformation['UsersInformation']['cours_espagnol']); ?>
-			&nbsp;
+		<dd><td><?php if($usersInformation['UsersInformation']['cours_espagnol'] == 1 ){
+		echo "oui" ;
+		}else{  
+		echo "non "; } ?>&nbsp;</td>
 		</dd>
 		<dt><?php echo __('Espagnol Precise'); ?></dt>
 		<dd>
@@ -99,8 +100,11 @@
 		</dd>
 		<dt><?php echo __('Paiement'); ?></dt>
 		<dd>
-			<?php echo h($usersInformation['UsersInformation']['paiement']); ?>
-			&nbsp;
+		<td><?php if($usersInformation['UsersInformation']['paiement'] == 1 ){
+		echo "payé" ;
+		}else{  
+		echo "non payé"; } ?>&nbsp;</td>
+			
 		</dd>
 	</dl>
 </div>
@@ -117,5 +121,6 @@
 		<li><?php echo $this->Html->link(__('New Programme'), array('controller' => 'programmes', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Voyages'), array('controller' => 'voyages', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Voyage'), array('controller' => 'voyages', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('Rapport'), array('action' => 'rapportEtudiant',$usersInformation['UsersInformation']['id'])); ?> </li>
 	</ul>
 </div>

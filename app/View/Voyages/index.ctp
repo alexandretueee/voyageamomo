@@ -48,5 +48,7 @@
 		<li><?php echo $this->Html->link(__('New Voyage'), array('action' => 'add')); ?></li>
 		<li><?php echo $this->Html->link(__('List Users Informations'), array('controller' => 'users_informations', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Users Information'), array('controller' => 'users_informations', 'action' => 'add')); ?> </li>
+                <li><?php echo $this->Html->link(__('Rapport'), array('action' => 'rapport')); ?> </li>
+
 	</ul>
 </div>

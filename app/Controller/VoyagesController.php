@@ -51,6 +51,11 @@ public function logout() {
 		$this->Voyage->recursive = 0;
 		$this->set('voyages', $this->Paginator->paginate());
 	}
+	
+	public function rapport() {
+		$this->Voyage->recursive = 0;
+		$this->set('voyages', $this->Paginator->paginate());
+	}
 
 /**
  * view method
